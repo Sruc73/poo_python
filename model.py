@@ -24,10 +24,13 @@ class Zone:
     MIN_LONGITUDE_DEGREES = - 180
     MAX_LONGITUDE_DEGREES = 180
     WIDTH_DEGREES = 1 # Degrees of longitude
+    HEIFHT_DEGREES = 1 # Degrees of latitude
 
     def initialize_zones(self):
-        for longitude in range(self.MIN_LONGITUDE_DEGREES, self.MAX_LONGITUDE_DEGREES, self.WIDTH_DEGREES):
-            # zone = Zone(bottom_left_corner, top_right_corner)
+        for longitude in range(self.MIN_LONGITUDE_DEGREES, self.MAX_LONGITUDE_DEGREES, self.HEIGHT_DEGREES):
+            bottom_left_corner = Position(longitude, 1)
+            top_right_corner = Position(longitude + self.WIDTH_DEGREES, 1 + self.WIDTH_DEGREES)
+            zone = Zone(bottom_left_corner, top_right_corner)
 
     def  __init__(self, corner1, corner2):
         self.corner1 = corner1
