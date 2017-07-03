@@ -35,6 +35,8 @@ class Zone:
                 bottom_left_corner = Position(longitude, 1)
                 top_right_corner = Position(longitude + self.WIDTH_DEGREES, 1 + self.WIDTH_DEGREES)
                 zone = Zone(bottom_left_corner, top_right_corner)
+                self.ZONES.append(zone)
+        print(len(self.ZONES))
 
     def  __init__(self, corner1, corner2):
         self.corner1 = corner1
