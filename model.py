@@ -23,6 +23,8 @@ class Position:
 class Zone:
     MIN_LONGITUDE_DEGREES = - 180
     MAX_LONGITUDE_DEGREES = 180
+    MIN_LATITUDE_DEGREES = -90
+    MAS_LATITUDE_DEGREES = 90
     WIDTH_DEGREES = 1 # Degrees of longitude
     HEIFHT_DEGREES = 1 # Degrees of latitude
 
