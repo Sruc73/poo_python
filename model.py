@@ -1,6 +1,10 @@
 import json
 import math
 
+import matplotlib as mil
+mil.use('TkAgg')
+import matplotlib.pyplot as plt
+
 class Agent():
     def __init__(self, position, **agent_attributes):
         self.position = position
@@ -33,7 +37,7 @@ class Zone:
     WIDTH_DEGREES = 1 # Degrees of longitude
     HEIGHT_DEGREES = 1 # Degrees of latitude
     ZONES = []
-    EARTH_RADIU_KILOMETERS = 6371
+    EARTH_RADIUS_KILOMETERS = 6371
 
     def contains(self, position):
         return position.longitude >= min(self.corner1.longitude, self.corner2.longitude) and \
@@ -72,11 +76,11 @@ class Zone:
 
     @property
     def width(self):
-        return abs(self.corner1.longitude - self.corner2.longitude) * self.EARTH_RADIU_KILOMETERS
+        return abs(self.corner1.longitude - self.corner2.longitude) * self.EARTH_RADIUS_KILOMETERS
 
     @property
     def height(self):
-        return abs(self.corner1.latitude - self.corner2.latitude) * self.EARTH_RADIU_KILOMETERS
+        return abs(self.corner1.latitude - self.corner2.latitude) * self.EARTH_RADIUS_KILOMETERS
 
     @property
     def area(self):
@@ -97,10 +101,26 @@ class Zone:
     def average_agreeableness(self):
         if not self.inhabitants:
             return 0
-        agreeableness = []
-        for inhabitant in self.inhabitants:
-            agreeableness.append(inhabitant.agreeableness)
-        return sum(agreeableness) / self.population
+        return sum([inhabitant.agreeableness for inhabitant in self.inhabitants]) / self.population
+
+class BaseGraph:
+
+    def __init__(self):
+        self.title = "Your graph title"
+        self.x_label = "X-axis lable"
+        self.y_label = "Y-axis label"
+        self.show_grid = True
+
+    def show(self, zones):
+        # x_values = gather only x_values from zones
+        # y_values = gather only y_values from zones
+        plt.plot(X_values, Y_values, '.')
+        plt.xlabel(self.x_label)
+        plt.ylabel(self.y_label)
+        plt.title(self.title)
+        plt.grid(self.show_grid)
+        plt.show()
+
 
 
 def main():
@@ -112,6 +132,11 @@ def main():
         zone = Zone.find_zone_that_contains(position)
         zone.add_inhabitant(agent)
         print("Zone de population: ", zone.population)
+        # Initialisation du graphique
+        # agreeableness_graph = AgreeablenessGraph()
+
+        # Affichage du graphique. On passe en paramètre la liste de nos zones pour y avoir accès à l'intérieur de notre classe AgreeablenessGraph.
+        # agreeableness_graph.show(Zone.ZONES)
 
 
 main()
