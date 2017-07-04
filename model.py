@@ -33,6 +33,7 @@ class Zone:
     WIDTH_DEGREES = 1 # Degrees of longitude
     HEIGHT_DEGREES = 1 # Degrees of latitude
     ZONES = []
+    EARTH_RADIU_KILOMETERS = 6371
 
     def contains(self, position):
         return position.longitude >= min(self.corner1.longitude, self.corner2.longitude) and \
@@ -69,6 +70,19 @@ class Zone:
                 cls.ZONES.append(zone)
         print(len(cls.ZONES))
 
+    @property
+    def width(self):
+        return abs(self.corner1.longitude - self.corner2.longitude) * self.EARTH_RADIU_KILOMETERS
+
+    @property
+    def height(self):
+        return abs(self.corner1.latitude - self.corner2.latitude) * self.EARTH_RADIU_KILOMETERS
+
+    @property
+    def area(self):
+        return self.height * self.width
+
+
     def  __init__(self, corner1, corner2):
         self.corner1 = corner1
         self.corner2 = corner2
@@ -76,6 +90,9 @@ class Zone:
 
     def add_inhabitant(self, inhabitant):
         self.inhabitant.append(inhabitant)
+
+    def population_density(self):
+        return self.population / self.area
 
 
 def main():
