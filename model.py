@@ -94,6 +94,14 @@ class Zone:
     def population_density(self):
         return self.population / self.area
 
+    def average_agreeableness(self):
+        if not self.inhabitants:
+            return 0
+        agreeableness = []
+        for inhabitant in self.inhabitants:
+            agreeableness.append(inhabitant.agreeableness)
+        return sum(agreeableness) / self.population
+
 
 def main():
     for agent_attributes in json.load(open("agents-100k.json")):
