@@ -20,6 +20,11 @@ class Position:
     def latitude(self):
         return self.latitude_degrees * math.pi / 180
 
+
+    @property
+    def population(self):
+        return len(self.inhabitants)
+
 class Zone:
     MIN_LONGITUDE_DEGREES = - 180
     MAX_LONGITUDE_DEGREES = 180
@@ -28,6 +33,27 @@ class Zone:
     WIDTH_DEGREES = 1 # Degrees of longitude
     HEIGHT_DEGREES = 1 # Degrees of latitude
     ZONES = []
+
+    def contains(self, position):
+        return position.longitude >= min(self.corner1.longitude, self.corner2.longitude) and \
+        position.longitude < max(self.corner1.longitude, self.corner2.longitude) and \
+        position.latitude >= min(self.corner1.latitude, self.corner2.latitude) and\
+        position.latitude < max(self.corner1.latitude, self.corner2.latitude)
+
+    @classmethod
+    def find_zone_that_contains(cls, position):
+        # Compute the index in the ZONES array that contains the given position
+        longitude_index = int((position.longitude_degrees - cls.MIN_LONGITUDE_DEGREES) / cls.WIDTH_DEGREES)
+        latitude_index = int((position.latitude_degrees - cls.MIN_LATITUDE_DEGREES) / cls.HEIGHT_DEGREES)
+        longitude_bins = int((cls.MAX_LONGITUDE_DEGREES - cls.MIN_LONGITUDE_DEGREES)/ cls.WIDTH_DEGREES) # 180 -(-180)/ 1
+        zone_index = latitude_index * longitude_bins + longitude_index
+
+        # Just checking that the index is correct
+        zone = cls.ZONES[zone_index]
+        assert zone.contains(position)
+
+        return zone
+
 
     @classmethod
     def initialize_zones(cls):
@@ -42,7 +68,10 @@ class Zone:
     def  __init__(self, corner1, corner2):
         self.corner1 = corner1
         self.corner2 = corner2
-        self.inhabitants = 0
+        self.inhabitants = []
+
+    def add_inhabitant(self, inhabitant):
+        self.inhabitant.append(inhabitant)
 
 
 def main():
@@ -52,5 +81,9 @@ def main():
         position = Position(longitude, latitude)
         agent = Agent(position, **agent_attributes)
         Zone.initialize_zones()
+        zone = Zone.find_zone_that_contains(position)
+        zone.add_inhabitant(agent)
+        print("Zone de population: ", zone.population)
+
 
 main()
