@@ -144,6 +144,17 @@ class AgreeablenessGraph(BaseGraph):
         y_values = [zone.average_agreeableness() for zone in zones]
         return x_values, y_values
 
+# Code du graph rapport age/salaire
+
+class incomeGraph(BaseGraph):
+
+    def __init__(self):
+        super().__init__()
+        self.title = "Average money per age"
+        self.x_label = "Age"
+        self.y_label = "income"
+
+    def xy_values(self, zones):
 
 
 
