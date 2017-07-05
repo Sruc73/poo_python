@@ -1,11 +1,11 @@
 import json
 import math
-
 import matplotlib as mil
 mil.use('TkAgg')
 import matplotlib.pyplot as plt
 
 class Agent():
+
     def __init__(self, position, **agent_attributes):
         self.position = position
         for attr_name, attr_value in agent_attributes.items():
@@ -18,26 +18,59 @@ class Position:
 
     @property
     def longitude(self):
+        # Lonitude in radians
         return self.longitude_degrees * math.pi / 180
 
     @property
     def latitude(self):
+        # Latitude in radians
         return self.latitude_degrees * math.pi / 180
 
-
-    @property
-    def population(self):
-        return len(self.inhabitants)
-
 class Zone:
-    MIN_LONGITUDE_DEGREES = - 180
+
+    ZONES = []
+    MIN_LONGITUDE_DEGREES = -180
     MAX_LONGITUDE_DEGREES = 180
     MIN_LATITUDE_DEGREES = -90
     MAX_LATITUDE_DEGREES = 90
     WIDTH_DEGREES = 1 # Degrees of longitude
     HEIGHT_DEGREES = 1 # Degrees of latitude
-    ZONES = []
     EARTH_RADIUS_KILOMETERS = 6371
+
+    def  __init__(self, corner1, corner2):
+        self.corner1 = corner1
+        self.corner2 = corner2
+        self.inhabitants = []
+
+    @property
+    def population(self):
+        return len(self.inhabitants)
+
+    @property
+    def height(self):
+        return abs(self.corner1.latitude - self.corner2.latitude) * self.EARTH_RADIUS_KILOMETERS
+
+    @property
+    def width(self):
+        return abs(self.corner1.longitude - self.corner2.longitude) * self.EARTH_RADIUS_KILOMETERS
+
+    @property
+    def area(self):
+        return self.height * self.width
+
+    def population_density(self):
+        # Note that this will crash with a ZeroDivisionError if the zone has 0
+        # area, but it should really not happen
+        return self.population / self.area
+
+
+    def add_inhabitant(self, inhabitant):
+        self.inhabitants.append(inhabitant)
+
+    def average_agreeableness(self):
+        if not self.inhabitants:
+           return 0
+        return sum([inhabitant.agreeableness for inhabitant in self.inhabitants]) / self.population
 
     def contains(self, position):
         return position.longitude >= min(self.corner1.longitude, self.corner2.longitude) and \
@@ -63,59 +96,45 @@ class Zone:
 
         return zone
 
-
     @classmethod
     def _initialize_zones(cls):
+        # Note that this method is "private": we prefix the method name with "_".
+        cls.ZONES = []
         for latitude in range(cls.MIN_LATITUDE_DEGREES, cls.MAX_LATITUDE_DEGREES, cls.HEIGHT_DEGREES):
             for longitude in range(cls.MIN_LONGITUDE_DEGREES, cls.MAX_LONGITUDE_DEGREES, cls.WIDTH_DEGREES):
-                bottom_left_corner = Position(longitude, 1)
-                top_right_corner = Position(longitude + cls.WIDTH_DEGREES, 1 + cls.WIDTH_DEGREES)
+                bottom_left_corner = Position(longitude, latitude)
+                top_right_corner = Position(longitude + cls.WIDTH_DEGREES, latitude + cls.HEIGHT_DEGREES)
                 zone = Zone(bottom_left_corner, top_right_corner)
                 cls.ZONES.append(zone)
-        print(len(cls.ZONES))
 
-    @property
-    def width(self):
-        return abs(self.corner1.longitude - self.corner2.longitude) * self.EARTH_RADIUS_KILOMETERS
-
-    @property
-    def height(self):
-        return abs(self.corner1.latitude - self.corner2.latitude) * self.EARTH_RADIUS_KILOMETERS
-
-    @property
-    def area(self):
-        return self.height * self.width
-
-
-    def  __init__(self, corner1, corner2):
-        self.corner1 = corner1
-        self.corner2 = corner2
-        self.inhabitants = []
-
-    def add_inhabitant(self, inhabitant):
-        self.inhabitant.append(inhabitant)
-
-    def population_density(self):
-        return self.population / self.area
-
-    def average_agreeableness(self):
-        if not self.inhabitants:
-            return 0
-        return sum([inhabitant.agreeableness for inhabitant in self.inhabitants]) / self.population
 
 class BaseGraph:
+
     def __init__(self):
         self.title = "Your graph title"
         self.x_label = "X-axis label"
         self.y_label = "Y-axis label"
         self.show_grid = True
 
+    def show(self, zones):
+        # x_values = gather only x_values from our zones
+        # y_values = gather only y_values from our zones
+        x_values, y_values = self.xy_values(zones)
+        plt.plot(x_values, y_values, '.')
+        plt.xlabel(self.x_label)
+        plt.ylabel(self.y_label)
+        plt.title(self.title)
+        plt.grid(self.show_grid)
+        plt.show()
+
     def xy_values(self, zones):
         raise NotImplementedError
 
-class agreeableness(BaseGraph):
+
+class AgreeablenessGraph(BaseGraph):
+
     def __init__(self):
-        super().def __init__() # Execute the parent's __init__() method
+        super().__init__() # Execute the parent's __init__() method
         self.title = "Nice people live in the countryside"
         self.x_label = "population density"
         self.y_label = "agreeableness"
@@ -126,16 +145,7 @@ class agreeableness(BaseGraph):
         return x_values, y_values
 
 
-class Graph:
-    def show(self, zones):
-        # x_values = gather only x_values from zones
-        # y_values = gather only y_values from zones
-        plt.plot(X_values, Y_values, '.')
-        plt.xlabel(self.x_label)
-        plt.ylabel(self.y_label)
-        plt.title(self.title)
-        plt.grid(self.show_grid)
-        plt.show()
+
 
 
 
@@ -147,12 +157,8 @@ def main():
         agent = Agent(position, **agent_attributes)
         zone = Zone.find_zone_that_contains(position)
         zone.add_inhabitant(agent)
-        print("Zone de population: ", zone.population)
-        # Initialisation du graphique
-        # agreeableness_graph = AgreeablenessGraph()
 
-        # Affichage du graphique. On passe en paramètre la liste de nos zones pour y avoir accès à l'intérieur de notre classe AgreeablenessGraph.
-        # agreeableness_graph.show(Zone.ZONES)
-
+    agreeableness_graph = AgreeablenessGraph()
+    agreeableness_graph.show(Zone.ZONES)
 
 main()
