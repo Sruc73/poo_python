@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+# coding utf-8
+
 import json
 import math
 import matplotlib as mil
@@ -155,6 +158,12 @@ class incomeGraph(BaseGraph):
         self.y_label = "income"
 
     def xy_values(self, zones):
+        # Initialiser un compteur du nombre d'habitant
+        # Définir l'échelle de l'axe des abscisses
+        x_values = range (0, 110) # If you're over 100 years old... You're lucky and very old
+        # Définir l'axe des ordonnées
+        y_values =
+
 
 
 
