@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# coding utf-8
+# coding: utf-8
 
 import json
 import math
@@ -181,4 +181,6 @@ def main():
     agreeableness_graph = AgreeablenessGraph()
     agreeableness_graph.show(Zone.ZONES)
 
-main()
+
+if __name__ ==  "__main__":
+    main()
