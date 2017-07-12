@@ -21,7 +21,7 @@ class Position:
 
     @property
     def longitude(self):
-        # Lonitude in radians
+        # Longitude in radians
         return self.longitude_degrees * math.pi / 180
 
     @property
