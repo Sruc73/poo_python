@@ -21,12 +21,12 @@ class Position:
 
     @property
     def longitude(self):
-        # Longitude in radians
+        """ Longitude in radians """
         return self.longitude_degrees * math.pi / 180
 
     @property
     def latitude(self):
-        # Latitude in radians
+        """ Latitude in radians """
         return self.latitude_degrees * math.pi / 180
 
 class Zone:
@@ -64,7 +64,10 @@ class Zone:
     def population_density(self):
         # Note that this will crash with a ZeroDivisionError if the zone has 0
         # area, but it should really not happen
-        return self.population / self.area
+        try:
+            return self.population / self.area
+        except ZeroDivisionError:
+            print("Division par zéro impossible!")
 
 
     def add_inhabitant(self, inhabitant):
@@ -84,10 +87,10 @@ class Zone:
     @classmethod
     def find_zone_that_contains(cls, position):
         if not cls.ZONES:
-            # Initialize zones automatically  if necessary
+            """ Initialize zones automatically  if necessary """
             cls._initialize_zones()
 
-        # Compute the index in the ZONES array that contains the given position
+        """ Compute the index in the ZONES array that contains the given position """
         longitude_index = int((position.longitude_degrees - cls.MIN_LONGITUDE_DEGREES) / cls.WIDTH_DEGREES)
         latitude_index = int((position.latitude_degrees - cls.MIN_LATITUDE_DEGREES) / cls.HEIGHT_DEGREES)
         longitude_bins = int((cls.MAX_LONGITUDE_DEGREES - cls.MIN_LONGITUDE_DEGREES)/ cls.WIDTH_DEGREES) # 180 -(-180)/ 1
@@ -162,7 +165,7 @@ class incomeGraph(BaseGraph):
         # Définir l'échelle de l'axe des abscisses
         x_values = range (0, 110) # If you're over 100 years old... You're lucky and very old
         # Définir l'axe des ordonnées
-        y_values =
+        #y_values =
 
 
 
