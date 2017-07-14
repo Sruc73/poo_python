@@ -1,11 +1,13 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
+import argparse
+from collections import defaultdict # for income graph
 import json
 import math
-from collections import defaultdict
+
 import matplotlib as mil
-mil.use('TkAgg')
+mil.use('TkAgg') # add it before launching matplotlib
 import matplotlib.pyplot as plt
 
 class Agent():
@@ -168,10 +170,13 @@ class IncomeGraph(BaseGraph):
     def xy_values(self, zones):
         income_by_age = defaultdict(float)
         population_by_age = defaultdict(int)
+        for zone in zones:
+            for inhabitant in zones.inhabitants:
+                income_by_age[inhabitant.age] += inhabitant.income
+                population_by_age[inhabitant.age] += 1
         x_values = range (0, 110) # If you're over 110 years old... You're lucky and... very old
-        y_values = [income_by_age[age] / population_by_age[age] or 1]
+        y_values = [income_by_age[age] / (population_by_age[age] or 1) for age in range(0, 110)]
         return x_values, y_values
-
 
 def main():
     for agent_attributes in json.load(open("agents-100k.json")):
@@ -184,6 +189,9 @@ def main():
 
     agreeableness_graph = AgreeablenessGraph()
     agreeableness_graph.show(Zone.ZONES)
+
+    income_graph = IncomeGraph()
+    income_graph.show(Zone.ZONES)
 
 
 if __name__ == "__main__":
