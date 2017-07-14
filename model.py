@@ -3,6 +3,7 @@
 
 import json
 import math
+from collections import defaultdict
 import matplotlib as mil
 mil.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -47,18 +48,22 @@ class Zone:
 
     @property
     def population(self):
+        """ Number of inhabitants in a zone """
         return len(self.inhabitants)
 
     @property
     def height(self):
+        """ Height in kilometers """
         return abs(self.corner1.latitude - self.corner2.latitude) * self.EARTH_RADIUS_KILOMETERS
 
     @property
     def width(self):
+        """ Width in kilometers """
         return abs(self.corner1.longitude - self.corner2.longitude) * self.EARTH_RADIUS_KILOMETERS
 
     @property
     def area(self):
+        """ return an area in square kilometers """
         return self.height * self.width
 
     def population_density(self):
@@ -152,24 +157,20 @@ class AgreeablenessGraph(BaseGraph):
 
 # Code du graph rapport age/salaire
 
-class incomeGraph(BaseGraph):
+class IncomeGraph(BaseGraph):
 
     def __init__(self):
         super().__init__()
         self.title = "Average money per age"
         self.x_label = "Age"
-        self.y_label = "income"
+        self.y_label = "Income"
 
     def xy_values(self, zones):
-        # Initialiser un compteur du nombre d'habitant
-        # Définir l'échelle de l'axe des abscisses
-        #x_values = range (0, 110) # If you're over 100 years old... You're lucky and very old
-        # Définir l'axe des ordonnées
-        #y_values =
-
-
-
-
+        income_by_age = defaultdict(float)
+        population_by_age = defaultdict(int)
+        x_values = range (0, 110) # If you're over 110 years old... You're lucky and... very old
+        y_values = [income_by_age[age] / population_by_age[age] or 1]
+        return x_values, y_values
 
 
 def main():
@@ -185,5 +186,5 @@ def main():
     agreeableness_graph.show(Zone.ZONES)
 
 
-if __name__ ==  "__main__":
+if __name__ == "__main__":
     main()
